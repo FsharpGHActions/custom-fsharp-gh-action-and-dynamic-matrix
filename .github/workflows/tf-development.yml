@@ -31,10 +31,13 @@ jobs:
         with:
           directories: ${{ steps.changed-files.outputs.all_changed_files }}
       - name: Print result from previous step
+        env:
+          GAJO_TEST_1: echo ${{ steps.modified-directories.outputs.formatted-directories }}
+          # GAJO_TEST_2: echo ${{ fromJSON(steps.modified-directories.outputs.formatted-directories) }}
         run: |
-          # echo ${{ steps.modified-directories.outputs.formatted-directories }}
+          echo $GAJO_TEST_1
 
-          echo ${{ fromJSON(steps.modified-directories.outputs.formatted-directories) }}
+          
     outputs:
       matrix: ${{ steps.modified-directories.outputs.formatted-directories }}
 
