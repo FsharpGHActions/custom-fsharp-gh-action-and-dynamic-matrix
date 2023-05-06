@@ -1,0 +1,41 @@
+name: Fsharp Automated Tests
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '**.fs'
+      - '**.fsx'
+      - '**.fsproj'
+
+env:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+# Kill other jobs when we trigger this workflow by sending new commits
+# to the PR.
+# https://stackoverflow.com/a/72408109
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fsharp-automated-tests:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: .github/fsharp-custom-action/tests # TODO: make it dynamic
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: .NET restore
+        run: dotnet restore
+
+      - name: Run automated tests
+        run: dotnet run
