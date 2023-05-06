@@ -30,14 +30,6 @@ jobs:
         uses: ./.github/fsharp-custom-action
         with:
           directories: ${{ steps.changed-files.outputs.all_changed_files }}
-      - name: Print result from previous step
-        env:
-          GAJO_TEST_1: ${{ steps.modified-directories.outputs.formatted-directories }}
-          # GAJO_TEST_2: ${{ fromJSON(steps.modified-directories.outputs.formatted-directories) }}
-        run: |
-          echo $GAJO_TEST_1
-
-          
     outputs:
       matrix: ${{ steps.modified-directories.outputs.formatted-directories }}
 
