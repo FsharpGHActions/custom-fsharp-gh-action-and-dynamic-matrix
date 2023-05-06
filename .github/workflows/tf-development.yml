@@ -27,7 +27,7 @@ jobs:
           files: terraform/
       - name: List all changed files
         id: changed-dirs
-        uses: ./.github/fsharp-changed-dirs
+        uses: ./.github/fsharp-custom-action
         with:
           directories: ${{ steps.changed-files.outputs.all_changed_files }}
     outputs:
