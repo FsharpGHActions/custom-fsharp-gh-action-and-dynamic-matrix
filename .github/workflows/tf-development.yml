@@ -30,6 +30,11 @@ jobs:
         uses: ./.github/fsharp-custom-action
         with:
           directories: ${{ steps.changed-files.outputs.all_changed_files }}
+      - name: Print result from previous step
+        run: |
+          echo "result 1: ${{ steps.modified-directories.outputs.formatted-directories }}"
+
+          echo "result2: ${{ fromJSON(steps.modified-directories.outputs.formatted-directories) }}"
     outputs:
       matrix: ${{ steps.modified-directories.outputs.formatted-directories }}
 
