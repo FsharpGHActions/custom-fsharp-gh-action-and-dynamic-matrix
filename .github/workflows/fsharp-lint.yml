@@ -22,9 +22,6 @@ concurrency:
 jobs:
   fantomas-check:
     runs-on: ubuntu-22.04
-    defaults:
-      run:
-        working-directory: .github/fsharp-custom-action/src # TODO: make it dynamic
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -37,5 +34,8 @@ jobs:
       - name: .NET tool restore
         run: dotnet tool install --global fantomas --version 6.0.2
 
-      - name: Check lint
-        run: fantomas -r --check .
+      - name: Check lint for src/
+        run: fantomas -r --check .github/fsharp-custom-action/src
+
+      - name: Check lint for tests/
+        run: fantomas -r --check .github/fsharp-custom-action/tests
