@@ -1,0 +1,15 @@
+name: 'Fsharp Custom Action'
+description: 'Get the modified directories in a formatted style'
+inputs:
+  directories: # id of input
+    description: 'Modified directories without formatting'
+    required: true
+    default: '[]'
+outputs:
+  formatted-directories: # id of output
+    description: 'Modified directories formatted'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.directories }}

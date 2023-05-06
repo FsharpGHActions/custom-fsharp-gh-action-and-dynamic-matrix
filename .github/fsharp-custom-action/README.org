@@ -1,0 +1,52 @@
+#+TITLE: Fsharp Custom Action
+#+DATE: [2023-05-05 sex]
+#+AUTHOR: 64J0
+
+POC showing how to use F# to create a custom Github Action.
+
+** Requirements
+
++ .NET 6
++ Docker
+
+** How to manually test
+
+For local testing, you can go directly to the script path, under the ~src/~
+directory, and run:
+
+#+BEGIN_SRC bash :tangle no
+  cd src/
+
+  # restore the dependencies
+  dotnet restore
+
+  dotnet run "[\\"terraform/instance-1/network/main.tf\\"]"
+  # assert that the output is:
+  # serializedResult: ["terraform/instance-1"]
+#+END_SRC
+
+And to test the Docker container:
+
+#+BEGIN_SRC bash :tangle no
+  # build the image locally
+  docker build -t fsharp-action:latest -f Dockerfile .
+
+  # test it
+  docker run fsharp-action:latest "[\\"terraform/instance-1/network/main.tf\\"]"
+  # assert that the output is:
+  # serializedResult: ["terraform/instance-1"]
+#+END_SRC
+
+** Automated tests
+
+In order to make it easier to test different scenarios, we provided some
+automated tests that use the [[https://github.com/haf/expecto][Expecto]] package.
+
+#+BEGIN_SRC bash :tangle no
+  cd tests/
+
+  # restore the dependencies
+  dotnet restore
+
+  dotnet run
+#+END_SRC
