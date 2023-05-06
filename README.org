@@ -1,0 +1,9 @@
+#+TITLE: Custom GH Action using F# and dynamic matrix configuration
+#+DATE: [2023-05-05 sex]
+#+AUTHOR: 64J0
+
+This repository holds the code used to create a custom Github Action using F#,
+and show how to use it to manage dynamically the CI workflow matrix
+configuration.
+
+More information? TODO.
