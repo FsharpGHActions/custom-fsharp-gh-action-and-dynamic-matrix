@@ -39,7 +39,7 @@ let private writeToGithubOutput (serializedResult: string) : unit =
 
     match (File.Exists githubOutputPath) with
     | false -> () // when running outside Github Actions environment
-    | true -> File.AppendAllText(githubOutputPath, $"dirschanged={serializedResult}")
+    | true -> File.AppendAllText(githubOutputPath, $"formatted-directories={serializedResult}")
 
 [<EntryPoint>]
 let main (args: string array) : int =
