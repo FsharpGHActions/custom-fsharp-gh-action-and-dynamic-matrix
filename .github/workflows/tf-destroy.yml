@@ -1,0 +1,37 @@
+name: Terraform Destroy
+
+on:
+  workflow_dispatch: # manual trigger
+    inputs:
+      project:
+        type: choice
+        required: true
+        description: What project to apply
+        options:
+        - instance-1
+        - instance-2
+      module:
+        type: choice
+        required: true
+        description: Which module to apply
+        options:
+        - network
+        - virtual-machine
+
+env:
+  PROJECT_DIRECTORY: terraform/${{ github.event.inputs.project }}/${{ github.event.inputs.module }}
+        
+jobs:
+  # destroy the configuration in the production environment.
+  destroy:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: ./${{ env.PROJECT_DIRECTORY }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Terraform plan
+        run: terraform plan -out tfplan
+      - name: Terraform destroy
+        run: terraform destroy -auto-approve
