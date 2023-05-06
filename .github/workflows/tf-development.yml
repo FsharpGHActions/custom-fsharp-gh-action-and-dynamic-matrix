@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   # https://github.com/marketplace/actions/changed-files
-  get-changed-files:
+  get-modified-files:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout repository
@@ -26,20 +26,20 @@ jobs:
           json: true
           files: terraform/
       - name: List all changed files
-        id: changed-dirs
+        id: modified-directories
         uses: ./.github/fsharp-custom-action
         with:
           directories: ${{ steps.changed-files.outputs.all_changed_files }}
     outputs:
-      matrix: ${{ steps.changed-dirs.outputs.formatted-directories }}
+      matrix: ${{ steps.modified-directories.outputs.formatted-directories }}
 
   # Check the Terraform configuration formatting
   format:
     runs-on: ubuntu-22.04
-    needs: [get-changed-files]
+    needs: [get-modified-files]
     strategy:
       matrix:
-        PROJECT_DIRECTORY: ${{ fromJSON(needs.get-changed-files.outputs.matrix) }}
+        PROJECT_DIRECTORY: ${{ fromJSON(needs.get-modified-files.outputs.matrix) }}
     defaults:
       run:
         working-directory: ./${{ matrix.PROJECT_DIRECTORY }}
@@ -52,10 +52,10 @@ jobs:
   # Validate the Terraform configuration
   validate:
     runs-on: ubuntu-22.04
-    needs: [get-changed-files]
+    needs: [get-modified-files]
     strategy:
       matrix:
-        PROJECT_DIRECTORY: ${{ fromJSON(needs.get-changed-files.outputs.matrix) }}
+        PROJECT_DIRECTORY: ${{ fromJSON(needs.get-modified-files.outputs.matrix) }}
     defaults:
       run:
         working-directory: ./${{ matrix.PROJECT_DIRECTORY }}
@@ -67,11 +67,11 @@ jobs:
 
   # Get the Terraform plan to understand what will change before applying
   terraform-plan:
-    needs: [get-changed-files, format, validate]
+    needs: [get-modified-files, format, validate]
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        PROJECT_DIRECTORY: ${{ fromJSON(needs.get-changed-files.outputs.matrix) }}
+        PROJECT_DIRECTORY: ${{ fromJSON(needs.get-modified-files.outputs.matrix) }}
     defaults:
       run:
         working-directory: ./${{ matrix.PROJECT_DIRECTORY }}
