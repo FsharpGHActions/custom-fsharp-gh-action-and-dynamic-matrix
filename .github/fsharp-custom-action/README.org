@@ -22,7 +22,7 @@ directory, and run:
 
   dotnet run "[\\"terraform/instance-1/network/main.tf\\"]"
   # assert that the output is:
-  # serializedResult: ["terraform/instance-1"]
+  # serializedResult: ["terraform/instance-1/network"]
 #+END_SRC
 
 And to test the Docker container:
@@ -34,7 +34,7 @@ And to test the Docker container:
   # test it
   docker run fsharp-action:latest "[\\"terraform/instance-1/network/main.tf\\"]"
   # assert that the output is:
-  # serializedResult: ["terraform/instance-1"]
+  # serializedResult: ["terraform/instance-1/network"]
 #+END_SRC
 
 ** Automated tests

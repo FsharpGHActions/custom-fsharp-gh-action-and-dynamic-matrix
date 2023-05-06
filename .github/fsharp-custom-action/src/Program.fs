@@ -19,8 +19,8 @@ let private removeBackslash (s: string): string =
 let getDirectory (s: string): string =
     let dirsNameArray = s.Split [| '/' |]
 
-    match (dirsNameArray.Length > 2) with
-    | true -> $"{dirsNameArray.[0]}/{dirsNameArray.[1]}"
+    match (dirsNameArray.Length > 3) with
+    | true -> $"{dirsNameArray.[0]}/{dirsNameArray.[1]}/{dirsNameArray.[2]}"
     | false -> ""
 
 let getFormattedDirectories (args: string array) =
