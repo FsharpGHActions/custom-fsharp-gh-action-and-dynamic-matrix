@@ -32,9 +32,9 @@ jobs:
           directories: ${{ steps.changed-files.outputs.all_changed_files }}
       - name: Print result from previous step
         run: |
-          echo "result 1: ${{ steps.modified-directories.outputs.formatted-directories }}"
+          echo ${{ steps.modified-directories.outputs.formatted-directories }}
 
-          echo "result2: ${{ fromJSON(steps.modified-directories.outputs.formatted-directories) }}"
+          # echo ${{ fromJSON(steps.modified-directories.outputs.formatted-directories) }}
     outputs:
       matrix: ${{ steps.modified-directories.outputs.formatted-directories }}
 
