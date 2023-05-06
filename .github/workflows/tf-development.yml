@@ -1,0 +1,82 @@
+name: Terraform Development
+
+on:
+  pull_request:
+    paths:
+      - 'terraform/**.tf'
+
+# Kill other jobs when we trigger this workflow by sending new commits
+# to the PR.
+# https://stackoverflow.com/a/72408109
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # https://github.com/marketplace/actions/changed-files
+  get-changed-files:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v35
+        with:
+          json: true
+          files: terraform/
+      - name: List all changed files
+        id: changed-dirs
+        uses: ./.github/fsharp-changed-dirs
+        with:
+          directories: ${{ steps.changed-files.outputs.all_changed_files }}
+    outputs:
+      matrix: ${{ steps.changed-dirs.outputs.formatted-directories }}
+
+  # Check the Terraform configuration formatting
+  format:
+    runs-on: ubuntu-22.04
+    needs: [get-changed-files]
+    strategy:
+      matrix:
+        PROJECT_DIRECTORY: ${{ fromJSON(needs.get-changed-files.outputs.matrix) }}
+    defaults:
+      run:
+        working-directory: ./${{ matrix.PROJECT_DIRECTORY }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Check Terraform format
+        run: terraform fmt -check
+
+  # Validate the Terraform configuration
+  validate:
+    runs-on: ubuntu-22.04
+    needs: [get-changed-files]
+    strategy:
+      matrix:
+        PROJECT_DIRECTORY: ${{ fromJSON(needs.get-changed-files.outputs.matrix) }}
+    defaults:
+      run:
+        working-directory: ./${{ matrix.PROJECT_DIRECTORY }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Validate Terraform configuration
+        run: terraform validate
+
+  # Get the Terraform plan to understand what will change before applying
+  terraform-plan:
+    needs: [get-changed-files, format, validate]
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        PROJECT_DIRECTORY: ${{ fromJSON(needs.get-changed-files.outputs.matrix) }}
+    defaults:
+      run:
+        working-directory: ./${{ matrix.PROJECT_DIRECTORY }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Terraform plan
+        run: terraform plan
