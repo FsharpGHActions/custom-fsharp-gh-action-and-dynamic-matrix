@@ -1,1 +1,1 @@
-.github/fsharp-custom-action/* linguist-detectable
+.github/fsharp-custom-action/** -linguist-vendored
