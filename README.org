@@ -6,4 +6,4 @@ This repository holds the code used to create a custom Github Action using F#,
 and show how to use it to manage dynamically the CI workflow matrix
 configuration.
 
-More information? TODO.
+More information? Read [[https://gaio.dev/posts/2023-05-10-custom-fsharp-gh-action-and-dynamic-matrix][this article]] from my personal blog.
